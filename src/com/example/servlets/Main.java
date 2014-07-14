@@ -31,6 +31,8 @@ public class Main extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String email = request.getParameter("email");
 		String pass = request.getParameter("pass");
+		email = "znatr10@freeuni.edu.ge";
+		pass = "zura";
 		DBConnector dbc = new DBConnector("root", "root");
 		System.out.println(request.getParameter("type"));
 		String resp = dbc.getListFor(email, pass);

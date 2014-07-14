@@ -1,6 +1,5 @@
 package com.example.db;
 
-import java.lang.annotation.Retention;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -8,8 +7,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Properties;
-
-import com.sun.org.glassfish.gmbal.ParameterNames;
 
 public class DBConnector {
 	// The JDBC Connector Class.
@@ -24,6 +21,8 @@ public class DBConnector {
 	private final String ssSubjectId = "subjectId";
 	private final String ssMark = "mark";
 	private final String ssfinished = "finished";
+	private final String subjectMarksStudentId = "studentId";
+	private final String subjectMarksSubjectId = "subjectId";
 
 	public DBConnector(String name, String pass) {
 		this.name = name;
@@ -46,7 +45,7 @@ public class DBConnector {
 			Statement st = c.createStatement();
 			String query = "select id from students where " + "(email = '"
 					+ email + "' AND " + "pass = '" + pass + "');";
-			System.out.println(query + "DWADAWDWADAWD");
+			System.out.println(query);
 			ResultSet rs = st.executeQuery(query);
 			if (!rs.first()) {
 				sb.append("-1");
@@ -81,6 +80,7 @@ public class DBConnector {
 				sb.append(rs.getInt(ssMark));
 				sb.append(" ");
 				sb.append(rs.getInt(ssfinished));
+				sb.append(getSubjectMarksFor(studentId, rs.getInt(ssSubjectId)));
 				arr.add(sb.toString());
 				sb = new StringBuilder();
 			}
@@ -90,7 +90,30 @@ public class DBConnector {
 		}
 		return arr;
 	}
-	
+	public String getSubjectMarksFor(int studentId, int subjectId){
+		StringBuilder marks = new StringBuilder();
+		try {
+			c = DriverManager.getConnection(CONNECTION, p);
+			Statement st = c.createStatement();
+			String query = "SELECT * FROM subjectMarks where (" + subjectMarksSubjectId + " = "
+					+ subjectId + " AND " + subjectMarksStudentId + " = " + studentId + ");";
+			System.out.println(query);
+			ResultSet rs = st.executeQuery(query);
+			while(rs.next()){
+				marks.append(" ");
+				marks.append(rs.getString("workName"));
+				marks.append(" ");
+				marks.append(rs.getInt("mark"));
+			}
+			if(marks.length() == 0)
+				return ",";
+			marks.append(',');
+			c.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return marks.toString();
+	}
 	/**
 	 * @param subjectId - id of a subject to select
 	 * @return string with pattern "id name credit"
@@ -115,13 +138,13 @@ public class DBConnector {
 		return info;
 	}
 
-	public void addStudentSubject(int studentId, int subjectId, int greade,
+	public void addStudentSubject(int studentId, int subjectId, int grade,
 			int finished) {
 		try {
 			c = DriverManager.getConnection(CONNECTION, p);
 			Statement st = c.createStatement();
 			String query = "insert into studentSubject values (" + studentId
-					+ ", " + subjectId + ", " + greade + ", " + finished + ");";
+					+ ", " + subjectId + ", " + grade + ", " + finished + ");";
 			System.out.println(query);
 			st.execute(query);
 			c.close();
@@ -129,12 +152,26 @@ public class DBConnector {
 			e.printStackTrace();
 		}
 	}
-
+	public void addSubjectMark(int studentId, int subjectId, String workName, int mark){
+		try {
+			c = DriverManager.getConnection(CONNECTION, p);
+			Statement st = c.createStatement();
+			String query = "insert into subjectMarks values (" + studentId
+					+ ", " + subjectId + ", '" + workName + "', " + mark + ");";
+			System.out.println(query);
+			st.execute(query);
+			c.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 	public static void main(String args[]) {
 		DBConnector dbc = new DBConnector("root", "root");
 		for(String s : dbc.getSubjectsFor(2)){
 			System.out.println(s);
 		}
+		//dbc.addSubjectMark(2, 1, "qvizi1", 56);
+		//dbc.addSubjectMark(2, 1, "qvizi2", 60);
 		/*dbc.addStudentSubject(2, 1, 89, 1);
 		dbc.addStudentSubject(2, 2, 91, 0);*/
 	}

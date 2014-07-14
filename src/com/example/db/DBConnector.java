@@ -46,7 +46,7 @@ public class DBConnector {
 			Statement st = c.createStatement();
 			String query = "select id from students where " + "(email = '"
 					+ email + "' AND " + "pass = '" + pass + "');";
-			System.out.println(query);
+			System.out.println(query + "DWADAWDWADAWD");
 			ResultSet rs = st.executeQuery(query);
 			if (!rs.first()) {
 				sb.append("-1");

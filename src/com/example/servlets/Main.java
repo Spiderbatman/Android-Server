@@ -32,8 +32,10 @@ public class Main extends HttpServlet {
 		String email = request.getParameter("email");
 		String pass = request.getParameter("pass");
 		DBConnector dbc = new DBConnector("root", "root");
-		System.out.println(dbc.getListFor(email, pass));
-		response.getWriter().println(dbc.getListFor(email, pass));
+		System.out.println(request.getParameter("type"));
+		String resp = dbc.getListFor(email, pass);
+		System.out.println(resp);
+		response.getWriter().println(resp);
 		response.getWriter().flush();
 		response.getWriter().close();
 	}

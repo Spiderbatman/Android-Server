@@ -23,4 +23,10 @@ CREATE TABLE `android`.`studentSubject` (
   CREATE TABLE `android`.`preReqs` (
   `preId` INT NOT NULL,
   `postId` INT NOT NULL);
+  CREATE TABLE `android`.`subjectMarks` (
+  `studentId` INT NOT NULL,
+  `subjectId` INT NOT NULL,
+  `workName` VARCHAR(45) NULL,
+  `mark` INT NULL);
+
   

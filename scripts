@@ -1,0 +1,26 @@
+CREATE SCHEMA `android` ;
+USE 'android';
+CREATE TABLE `android`.`students` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `email` VARCHAR(45) NOT NULL,
+  `pass` VARCHAR(45) NULL,
+  PRIMARY KEY (`id`));
+INSERT INTO `android`.`students` (`id`, `email`, `pass`) VALUES ('1', 'gpata11@freeuni.edu.ge', 'gigi');
+INSERT INTO `android`.`students` (`id`, `email`, `pass`) VALUES ('2', 'znatr10@freeuni.edu.ge', 'zura');
+CREATE TABLE `android`.`subjects` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NULL,
+  `credits` INT NULL,
+  PRIMARY KEY (`id`));
+INSERT INTO `android`.`subjects` (`id`, `name`, `credits`) VALUES ('1', 'calculusi', '6');
+INSERT INTO `android`.`subjects` (`id`, `name`, `credits`) VALUES ('2', 'calculusi2', '6');
+INSERT INTO `android`.`subjects` (`id`, `name`, `credits`) VALUES ('3', 'biologia', '6');
+CREATE TABLE `android`.`studentSubject` (
+  `studentId` INT NOT NULL,
+  `subjectId` INT NOT NULL,
+  `finished` INT NULL,
+  `mark` INT NULL);
+  CREATE TABLE `android`.`preReqs` (
+  `preId` INT NOT NULL,
+  `postId` INT NOT NULL);
+  

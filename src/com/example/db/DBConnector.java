@@ -48,15 +48,18 @@ public class DBConnector {
 			System.out.println(query);
 			ResultSet rs = st.executeQuery(query);
 			if (!rs.first()) {
-				sb.append("-1");
+				sb.append("-1#");
 				c.close();
 				return sb.toString();
 			}
 			sb.append(rs.getInt(userTableId));
 			sb.append('#');
 			ArrayList<String> subjects = getSubjectsFor(rs.getInt(userTableId));
-			for (String s : subjects)
-				sb.append(s);
+			for (int i = 0; i < subjects.size(); i++){
+				if(i > 0)
+					sb.append(',');
+				sb.append(subjects.get(i));
+			}
 			c.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -151,8 +154,7 @@ public class DBConnector {
 				marks.append(rs.getInt("mark"));
 			}
 			if (marks.length() == 0)
-				return ",";
-			marks.append(',');
+				return "";
 			c.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -254,10 +256,11 @@ public class DBConnector {
 		}
 		//dbc.addPreReq(2, 4);
 		/*
-		 * dbc.addSubjectMark(2, 1, "qvizi1", 56); dbc.addSubjectMark(2, 1,
-		 * "qvizi2", 60);
-		 * dbc.addStudentSubject(2, 2, 91, 0);
+		 * dbc.addSubjectMark(2, 1, "qvizi1", 56); 
 		 */
-		//dbc.addStudentSubject(2, 1, 89, 1);
+		// dbc.addStudentSubject(2, 2, 91, 0);
+		//dbc.addStudentSubject(2, 3, 91, 1);
+		//dbc.addSubjectMark(2, 3, "qvizi1", 0);
+		//dbc.addSubjectMark(2, 3, "finaluri", 4);
 	}
 }

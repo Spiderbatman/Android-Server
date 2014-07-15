@@ -34,8 +34,13 @@ public class Main extends HttpServlet {
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		StringBuilder resp = new StringBuilder();
-		if (request.getParameter("type") != null
-				&& request.getParameter("type").equals(2)) {
+		if (request.getParameter("type").equals(2)) {
+			for(int i = 0; true; i++){
+				if(request.getParameter("ind" + i) != null){
+					dbc.addStudentSubject(Integer.parseInt(request.getParameter("userId")),
+					Integer.parseInt(request.getParameter("ind" + i)), 0, 0);
+				}
+			}
 		} else {
 			String email = request.getParameter("email");
 			String pass = request.getParameter("pass");
@@ -60,16 +65,19 @@ public class Main extends HttpServlet {
 					if (!subs[arr.get(i)])
 						failed[arr.get(i + 1)] = true;
 				}
+				boolean started = false;
 				for (int i = 0; i < allSubs.size(); i++) {
 					if (!failed[allSubs.get(i)] && !subs[allSubs.get(i)]) {
+						if(started)
+							resp.append(',');
 						resp.append(dbc.getSubjectInfo(allSubs.get(i)));
-						resp.append(',');
+						started = true;
 					}
 				}
 			}
 		}
 		System.out.println(resp);
-		response.getWriter().println(resp);
+		response.getWriter().print(resp);
 		response.getWriter().flush();
 		response.getWriter().close();
 	}

@@ -34,11 +34,15 @@ public class Main extends HttpServlet {
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		StringBuilder resp = new StringBuilder();
-		if (request.getParameter("type").equals(2)) {
+		if (request.getParameter("type").equals("2")) {
+			System.out.println(request.getParameter("userID"));
 			for(int i = 0; true; i++){
 				if(request.getParameter("ind" + i) != null){
-					dbc.addStudentSubject(Integer.parseInt(request.getParameter("userId")),
+					dbc.addStudentSubject(Integer.parseInt(request.getParameter("userID")),
 					Integer.parseInt(request.getParameter("ind" + i)), 0, 0);
+					response.getWriter().print("archeulia");
+					response.getWriter().flush();
+					response.getWriter().close();
 				}
 			}
 		} else {

@@ -28,5 +28,9 @@ CREATE TABLE `android`.`studentSubject` (
   `subjectId` INT NOT NULL,
   `workName` VARCHAR(45) NULL,
   `mark` INT NULL);
-
+  insert into subjectMarks values (2, 1, 'qvizi1', 56);
+insert into subjectMarks values (2, 1, 'qvizi2', 60);
+insert into studentSubject values (2, 1, 89, 1);
+insert into studentSubject values (2, 2, 91, 0);
+insert into preReqs values (1, 2);
   

@@ -55,7 +55,7 @@ public class DBConnector {
 			sb.append(rs.getInt(userTableId));
 			sb.append('#');
 			ArrayList<String> subjects = getSubjectsFor(rs.getInt(userTableId));
-			for(String s : subjects)
+			for (String s : subjects)
 				sb.append(s);
 			c.close();
 		} catch (SQLException e) {
@@ -70,8 +70,8 @@ public class DBConnector {
 		try {
 			c = DriverManager.getConnection(CONNECTION, p);
 			Statement st = c.createStatement();
-			String query = "Select * from studentSubject where (" + 
-			ssStudentId	+ " = " + studentId + ");";
+			String query = "Select * from studentSubject where (" + ssStudentId
+					+ " = " + studentId + ");";
 			System.out.println(query);
 			ResultSet rs = st.executeQuery(query);
 			while (rs.next()) {
@@ -90,22 +90,67 @@ public class DBConnector {
 		}
 		return arr;
 	}
-	public String getSubjectMarksFor(int studentId, int subjectId){
+	
+	public ArrayList<Integer> getAllSubjects(){
+		ArrayList<Integer> arr = new ArrayList<Integer>();
+		try {
+			c = DriverManager.getConnection(CONNECTION, p);
+			Statement st = c.createStatement();
+			String query = "Select ID from subjects;";
+			ResultSet rs = st.executeQuery(query);
+			while (rs.next()) {
+				arr.add(rs.getInt(1));
+			}
+			c.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return arr;
+	}
+
+	/**
+	 * 
+	 * @param studentId
+	 *            - id of student for whom we want to get subject list
+	 * @return arraylist of subjects' ids' which he has chosen
+	 */
+	public ArrayList<Integer> getSubjectIdsFor(int studentId) {
+		ArrayList<Integer> arr = new ArrayList<Integer>();
+		try {
+			c = DriverManager.getConnection(CONNECTION, p);
+			Statement st = c.createStatement();
+			String query = "Select " + ssSubjectId
+					+ " from studentSubject where (" + ssStudentId + " = "
+					+ studentId + ");";
+			System.out.println(query);
+			ResultSet rs = st.executeQuery(query);
+			while (rs.next()) {
+				arr.add(rs.getInt(ssSubjectId));
+			}
+			c.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return arr;
+	}
+
+	public String getSubjectMarksFor(int studentId, int subjectId) {
 		StringBuilder marks = new StringBuilder();
 		try {
 			c = DriverManager.getConnection(CONNECTION, p);
 			Statement st = c.createStatement();
-			String query = "SELECT * FROM subjectMarks where (" + subjectMarksSubjectId + " = "
-					+ subjectId + " AND " + subjectMarksStudentId + " = " + studentId + ");";
+			String query = "SELECT * FROM subjectMarks where ("
+					+ subjectMarksSubjectId + " = " + subjectId + " AND "
+					+ subjectMarksStudentId + " = " + studentId + ");";
 			System.out.println(query);
 			ResultSet rs = st.executeQuery(query);
-			while(rs.next()){
+			while (rs.next()) {
 				marks.append(" ");
 				marks.append(rs.getString("workName"));
 				marks.append(" ");
 				marks.append(rs.getInt("mark"));
 			}
-			if(marks.length() == 0)
+			if (marks.length() == 0)
 				return ",";
 			marks.append(',');
 			c.close();
@@ -114,8 +159,10 @@ public class DBConnector {
 		}
 		return marks.toString();
 	}
+
 	/**
-	 * @param subjectId - id of a subject to select
+	 * @param subjectId
+	 *            - id of a subject to select
 	 * @return string with pattern "id name credit"
 	 */
 	public String getSubjectInfo(int subjectId) {
@@ -128,14 +175,32 @@ public class DBConnector {
 			System.out.println(query);
 			ResultSet rs = st.executeQuery(query);
 			while (rs.next()) {
-				info = rs.getInt(1) + " " + rs.getString(2) +
-						" " + rs.getInt(3);
+				info = rs.getInt(1) + " " + rs.getString(2) + " "
+						+ rs.getInt(3);
 			}
 			c.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return info;
+	}
+
+	public ArrayList<Integer> getPreReqs() {
+		ArrayList<Integer> arr = new ArrayList<Integer>();
+		try {
+			c = DriverManager.getConnection(CONNECTION, p);
+			Statement st = c.createStatement();
+			String query = "Select * from preReqs;";
+			ResultSet rs = st.executeQuery(query);
+			while (rs.next()) {
+				arr.add(rs.getInt(1));
+				arr.add(rs.getInt(2));
+			}
+			c.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return arr;
 	}
 
 	public void addStudentSubject(int studentId, int subjectId, int grade,
@@ -152,7 +217,23 @@ public class DBConnector {
 			e.printStackTrace();
 		}
 	}
-	public void addSubjectMark(int studentId, int subjectId, String workName, int mark){
+
+	public void addPreReq(int preId, int postId) {
+		try {
+			c = DriverManager.getConnection(CONNECTION, p);
+			Statement st = c.createStatement();
+			String query = "insert into preReqs values (" + preId + ", "
+					+ postId + ");";
+			System.out.println(query);
+			st.execute(query);
+			c.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void addSubjectMark(int studentId, int subjectId, String workName,
+			int mark) {
 		try {
 			c = DriverManager.getConnection(CONNECTION, p);
 			Statement st = c.createStatement();
@@ -165,14 +246,18 @@ public class DBConnector {
 			e.printStackTrace();
 		}
 	}
+
 	public static void main(String args[]) {
 		DBConnector dbc = new DBConnector("root", "root");
-		for(String s : dbc.getSubjectsFor(2)){
+		for (String s : dbc.getSubjectsFor(2)) {
 			System.out.println(s);
 		}
-		//dbc.addSubjectMark(2, 1, "qvizi1", 56);
-		//dbc.addSubjectMark(2, 1, "qvizi2", 60);
-		/*dbc.addStudentSubject(2, 1, 89, 1);
-		dbc.addStudentSubject(2, 2, 91, 0);*/
+		//dbc.addPreReq(2, 4);
+		/*
+		 * dbc.addSubjectMark(2, 1, "qvizi1", 56); dbc.addSubjectMark(2, 1,
+		 * "qvizi2", 60);
+		 * dbc.addStudentSubject(2, 2, 91, 0);
+		 */
+		//dbc.addStudentSubject(2, 1, 89, 1);
 	}
 }

@@ -50,23 +50,22 @@ public class Main extends HttpServlet {
 			String pass = request.getParameter("pass");
 			resp.append(dbc.getListFor(email, pass));
 			resp.append('|');
-			System.out.println(resp);
 			int myId = Integer.parseInt(resp.substring(0, resp.indexOf("#")));
 			if (myId != -1) {
 				ArrayList<Integer> arr = dbc.getPreReqs();
-				ArrayList<Integer> mySubs = dbc.getSubjectIdsFor(myId);
+				ArrayList<Integer> mySubs = dbc.getSubjectIdsFor(myId, 0);
+				ArrayList<Integer> learnedSubs = dbc.getSubjectIdsFor(myId, 1);
+				mySubs.addAll(learnedSubs);
 				ArrayList<Integer> allSubs = dbc.getAllSubjects();
-				for (int i = 0; i < arr.size(); i += 2)
-					System.out.println(arr.get(i) + " " + arr.get(i + 1));
-				System.out.println("--------------------------");
-				for (int i = 0; i < mySubs.size(); i++)
-					System.out.println(mySubs.get(i));
 				boolean[] subs = new boolean[600];
+				boolean[] learned = new boolean[600];
 				boolean[] failed = new boolean[600];
+				for(int i : learnedSubs)
+					learned[i] = true;
 				for (int i : mySubs)
 					subs[i] = true;
 				for (int i = 0; i < arr.size(); i += 2) {
-					if (!subs[arr.get(i)])
+					if (!learned[arr.get(i)])
 						failed[arr.get(i + 1)] = true;
 				}
 				boolean started = false;
@@ -80,7 +79,6 @@ public class Main extends HttpServlet {
 				}
 			}
 		}
-		System.out.println(resp);
 		response.getWriter().print(resp);
 		response.getWriter().flush();
 		response.getWriter().close();
